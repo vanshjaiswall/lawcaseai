@@ -62,19 +62,12 @@ export async function POST(req: NextRequest) {
 
     // Extract text based on file type
     if (fileName.endsWith(".pdf")) {
-      try {
-        // Use the lib path directly to avoid pdf-parse loading test files on import
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const pdfParse = require("pdf-parse/lib/pdf-parse.js");
-        const data = await pdfParse(buffer);
-        text = data.text;
-      } catch {
-        // Fallback: try the main export
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const pdfParse = require("pdf-parse");
-        const data = await pdfParse(buffer);
-        text = data.text;
-      }
+      // unpdf works reliably in Next.js serverless (unlike pdf-parse)
+      const { extractText, getDocumentProxy } = await import("unpdf");
+      const uint8 = new Uint8Array(buffer);
+      const pdf   = await getDocumentProxy(uint8);
+      const { text: extracted } = await extractText(pdf, { mergePages: true });
+      text = extracted;
     } else if (fileName.endsWith(".docx") || fileName.endsWith(".doc")) {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const mammoth = require("mammoth");
