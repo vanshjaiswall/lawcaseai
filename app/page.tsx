@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import CaseCard from "@/components/CaseCard";
+import CaseSummary from "@/components/CaseSummary";
 
 export interface CaseResult {
   id: string;
@@ -30,6 +31,7 @@ export default function Home() {
   const [error, setError]             = useState("");
   const [totalResults, setTotal]      = useState(0);
   const [correctedQuery, setCorrected] = useState("");
+  const [uploadResult, setUploadResult] = useState<{ summary: string; fileName: string } | null>(null);
 
   const handleSearch = async (query: string) => {
     setLoading(true);
@@ -63,8 +65,8 @@ export default function Home() {
         {/* ── Hero ── */}
         {!searched && (
           <div className="pt-16 pb-10 text-center">
-            {/* Eyebrow label — floats gently */}
-            <div className="fade-up float" style={{
+            {/* Eyebrow label */}
+            <div className="fade-up" style={{
               display: "inline-flex", alignItems: "center", gap: 7,
               background: "#f0f4ff",
               border: "1px solid #c7d7f9",
@@ -112,7 +114,11 @@ export default function Home() {
 
         {/* ── Search ── */}
         <div className={searched ? "pt-6 pb-4" : "pb-6"}>
-          <SearchBar onSearch={handleSearch} loading={loading} />
+          <SearchBar
+            onSearch={q => { setUploadResult(null); handleSearch(q); }}
+            loading={loading}
+            onUploadResult={r => { setUploadResult(r); setSearched(true); setResults([]); }}
+          />
         </div>
 
         {/* ── Example pills (only on home) ── */}
@@ -129,6 +135,38 @@ export default function Home() {
                 {e}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* ── Upload result ── */}
+        {uploadResult && (
+          <div className="slide-up pb-12">
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              marginBottom: 12,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1d4ed8" strokeWidth="1.6" strokeLinecap="round">
+                  <path d="M2 13h10M7 1v8M4 4l3-3 3 3"/>
+                </svg>
+                <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#1d4ed8" }}>
+                  {uploadResult.fileName}
+                </span>
+              </div>
+              <button
+                onClick={() => { setUploadResult(null); setSearched(false); }}
+                style={{
+                  background: "none", border: "none", cursor: "pointer",
+                  color: "#94a3b8", fontSize: "0.75rem", fontFamily: "inherit",
+                  padding: "4px 8px", borderRadius: 6, transition: "color 0.14s",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#dc2626")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#94a3b8")}
+              >
+                ✕ Close
+              </button>
+            </div>
+            <CaseSummary summary={uploadResult.summary} loading={false} />
           </div>
         )}
 

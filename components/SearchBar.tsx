@@ -3,7 +3,11 @@
 import { useState, useRef } from "react";
 import { COURTS, CATEGORIES, buildSearchQuery } from "@/lib/constants";
 
-interface Props { onSearch: (q: string) => void; loading: boolean; }
+interface Props {
+  onSearch: (q: string) => void;
+  loading: boolean;
+  onUploadResult?: (result: { summary: string; fileName: string }) => void;
+}
 
 const TYPES = [
   { value: "smart",    label: "Smart Search", hint: "Typos, abbreviations, partial names" },
@@ -42,15 +46,39 @@ const LABEL_STYLE: React.CSSProperties = {
   marginBottom: 6,
 };
 
-export default function SearchBar({ onSearch, loading }: Props) {
-  const [query,      setQuery]      = useState("");
-  const [type,       setType]       = useState("smart");
-  const [court,      setCourt]      = useState("");
-  const [category,   setCategory]   = useState("");
-  const [yearFrom,   setYearFrom]   = useState("");
-  const [yearTo,     setYearTo]     = useState("");
-  const [showFilter, setShowFilter] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+export default function SearchBar({ onSearch, loading, onUploadResult }: Props) {
+  const [query,        setQuery]        = useState("");
+  const [type,         setType]         = useState("smart");
+  const [court,        setCourt]        = useState("");
+  const [category,     setCategory]     = useState("");
+  const [yearFrom,     setYearFrom]     = useState("");
+  const [yearTo,       setYearTo]       = useState("");
+  const [showFilter,   setShowFilter]   = useState(false);
+  const [uploading,    setUploading]    = useState(false);
+  const [uploadError,  setUploadError]  = useState("");
+  const inputRef  = useRef<HTMLInputElement>(null);
+  const fileRef   = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError("");
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res  = await fetch("/api/upload", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+      onUploadResult?.({ summary: data.summary, fileName: data.fileName });
+    } catch (err: any) {
+      setUploadError(err.message || "Failed to analyse file");
+    } finally {
+      setUploading(false);
+      // Reset so same file can be re-uploaded
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
 
   const submit = (e?: React.FormEvent, overrideQuery?: string) => {
     e?.preventDefault();
@@ -115,6 +143,15 @@ export default function SearchBar({ onSearch, loading }: Props) {
 
         {/* Main input area */}
         <div style={{ padding: "12px 14px", display: "flex", gap: 8, alignItems: "center" }}>
+          {/* Hidden file input */}
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".pdf,.doc,.docx,.txt,.md"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+
           <div style={{ flex: 1, position: "relative" }}>
             <input
               ref={inputRef}
@@ -136,6 +173,41 @@ export default function SearchBar({ onSearch, loading }: Props) {
               enterKeyHint="search"
             />
           </div>
+
+          {/* Upload button */}
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading || loading}
+            title="Upload a PDF or Word doc for AI analysis"
+            style={{
+              width: 42, height: 42, borderRadius: 9, flexShrink: 0,
+              background: "#f8fafc", border: "1.5px solid #e2e8f0",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer", transition: "all 0.15s",
+              color: "#64748b",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff";
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "#93c5fd";
+              (e.currentTarget as HTMLButtonElement).style.color = "#1d4ed8";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#f8fafc";
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "#e2e8f0";
+              (e.currentTarget as HTMLButtonElement).style.color = "#64748b";
+            }}
+          >
+            {uploading
+              ? <span className="spinner" style={{ width: 15, height: 15 }} />
+              : (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 12h10M8 3v7M5 6l3-3 3 3"/>
+                </svg>
+              )
+            }
+          </button>
+
           <button
             type="submit"
             disabled={loading || !query.trim()}
@@ -153,6 +225,21 @@ export default function SearchBar({ onSearch, loading }: Props) {
             }
           </button>
         </div>
+
+        {/* Upload error */}
+        {uploadError && (
+          <div style={{
+            margin: "0 14px 10px",
+            padding: "8px 12px",
+            background: "rgba(254,242,242,0.9)",
+            border: "1px solid rgba(239,68,68,0.2)",
+            borderRadius: 8,
+            fontSize: "0.78rem",
+            color: "#dc2626",
+          }}>
+            {uploadError}
+          </div>
+        )}
 
         {/* Filter bar */}
         <div style={{
