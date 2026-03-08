@@ -73,7 +73,10 @@ function parseDocPage(html: string) {
   const date = dateMatch ? dateMatch[1] : "";
 
   // Clean date from title
-  const cleanTitle = title.replace(/\s+on\s+\d{1,2}\s+\w+,?\s+\d{4}$/i, "").trim();
+  let cleanTitle = title.replace(/\s+on\s+\d{1,2}\s+\w+,?\s+\d{4}$/i, "").trim();
+
+  // Indian Kanoon sometimes truncates long party names with " ... " — remove it for clean display
+  cleanTitle = cleanTitle.replace(/\s+\.\.\.\s+/g, " ");
 
   // Citation — <span class="doc_cite"> or look for AIR/SCC patterns
   const citeMatch = html.match(/<span\s+class="doc_cite"[^>]*>([\s\S]*?)<\/span>/i);

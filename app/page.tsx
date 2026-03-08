@@ -62,40 +62,50 @@ export default function Home() {
 
         {/* ── Hero ── */}
         {!searched && (
-          <div className="pt-16 pb-10 text-center fade-up">
-            <div
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                background: "var(--accent-dim)",
-                border: "1px solid rgba(245,158,11,0.2)",
-                borderRadius: 99, padding: "4px 14px",
-                fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.06em",
-                textTransform: "uppercase", color: "var(--accent)",
-                marginBottom: 20,
-              }}
-            >
-              <span>⚖️</span> Indian Legal Research · AI Powered
+          <div className="pt-16 pb-10 text-center">
+            {/* Eyebrow label — floats gently */}
+            <div className="fade-up float" style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              background: "#f0f4ff",
+              border: "1px solid #c7d7f9",
+              borderRadius: 6, padding: "5px 14px",
+              fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.05em",
+              textTransform: "uppercase", color: "#1e3a8a",
+              marginBottom: 24,
+            }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="6" r="5" stroke="#1e3a8a" strokeWidth="1.2"/>
+                <path d="M6 4v3M6 8.5v.2" stroke="#1e3a8a" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+              Indian Legal Research · AI Powered
             </div>
 
-            <h1
-              style={{
-                fontFamily: "Playfair Display, serif",
-                fontSize: "clamp(2rem, 6vw, 3.2rem)",
-                fontWeight: 700,
-                lineHeight: 1.15,
-                letterSpacing: "-0.02em",
-                color: "var(--text-1)",
-                marginBottom: 16,
-              }}
-            >
-              Research Case Law
+            <h1 className="slide-up" style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontSize: "clamp(1.9rem, 5.5vw, 3rem)",
+              fontWeight: 700,
+              lineHeight: 1.18,
+              letterSpacing: "-0.01em",
+              color: "#0f172a",
+              marginBottom: 16,
+              animationDelay: "0.06s",
+            }}>
+              Search Indian Case Law
               <br />
-              <span className="text-gradient">in seconds</span>
+              <span style={{ color: "#1d4ed8", fontStyle: "italic", fontWeight: 600 }}>powered by AI</span>
             </h1>
 
-            <p style={{ color: "var(--text-2)", fontSize: "1rem", lineHeight: 1.6, maxWidth: 480, margin: "0 auto 32px" }}>
+            <p className="fade-up" style={{
+              color: "#475569",
+              fontSize: "0.975rem",
+              lineHeight: 1.7,
+              maxWidth: 460,
+              margin: "0 auto 32px",
+              fontWeight: 400,
+              animationDelay: "0.13s",
+            }}>
               Smart search handles typos, abbreviations, and partial case names.
-              Get AI-generated summaries and chat with any judgment.
+              Get structured AI summaries and chat with any judgment.
             </p>
           </div>
         )}
@@ -107,13 +117,13 @@ export default function Home() {
 
         {/* ── Example pills (only on home) ── */}
         {!searched && !loading && (
-          <div className="flex flex-wrap gap-2 justify-center pb-16 fade-up" style={{ animationDelay: "0.1s" }}>
-            <span style={{ color: "var(--text-3)", fontSize: "0.75rem", paddingTop: 2 }}>Try:</span>
+          <div className="flex flex-wrap gap-2 justify-center pb-16 stagger" style={{ animationDelay: "0.18s" }}>
+            <span className="fade-up" style={{ color: "var(--text-3)", fontSize: "0.75rem", paddingTop: 2 }}>Try:</span>
             {EXAMPLES.map((e) => (
               <button
                 key={e}
                 onClick={() => handleSearch(e)}
-                className="btn btn-ghost"
+                className="btn btn-ghost fade-up"
                 style={{ fontSize: "0.75rem", padding: "5px 12px" }}
               >
                 {e}
@@ -143,9 +153,9 @@ export default function Home() {
         {!loading && error && (
           <div
             className="card fade-in"
-            style={{ padding: "20px", textAlign: "center", borderColor: "rgba(239,68,68,0.2)", background: "var(--red-dim)" }}
+            style={{ padding: "20px", textAlign: "center", borderColor: "rgba(239,68,68,0.2)", background: "rgba(254,242,242,0.8)" }}
           >
-            <p style={{ color: "#f87171", fontWeight: 500 }}>{error}</p>
+            <p style={{ color: "#dc2626", fontWeight: 500 }}>{error}</p>
           </div>
         )}
 
@@ -166,9 +176,9 @@ export default function Home() {
                 <div
                   className="fade-in"
                   style={{
-                    fontSize: "0.75rem", color: "#fbbf24",
-                    background: "var(--accent-dim)",
-                    border: "1px solid rgba(245,158,11,0.15)",
+                    fontSize: "0.75rem", color: "#1d4ed8",
+                    background: "rgba(29,78,216,0.05)",
+                    border: "1px solid rgba(29,78,216,0.15)",
                     borderRadius: 8, padding: "5px 12px",
                     display: "flex", alignItems: "center", gap: 6,
                   }}

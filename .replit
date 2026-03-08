@@ -1,4 +1,4 @@
-run = "npm run dev"
+run = "npm install && npm run build && npm start"
 entrypoint = "app/page.tsx"
 
 [nix]
@@ -6,6 +6,10 @@ channel = "stable-24_05"
 
 [env]
 PATH = "/home/runner/${REPL_SLUG}/node_modules/.bin:${PATH}"
+
+[deployment]
+run = ["sh", "-c", "npm install && npm run build && npm start"]
+buildCommand = "npm install && npm run build"
 
 [[ports]]
 localPort = 3000

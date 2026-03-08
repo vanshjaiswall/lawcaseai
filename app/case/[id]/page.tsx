@@ -8,31 +8,29 @@ import ChatInterface from "@/components/ChatInterface";
 interface CaseDoc {
   id: string;
   title: string;
-  fullText: string;
   court: string;
   date: string;
   citation: string;
   rawDoc: string;
 }
 
-type Tab = "summary" | "chat" | "fulltext";
+type Tab = "summary" | "chat";
 
 const TABS = [
-  { key: "summary"  as Tab, label: "AI Summary",    icon: "✨" },
-  { key: "chat"     as Tab, label: "Chat",           icon: "💬" },
-  { key: "fulltext" as Tab, label: "Full Judgment",  icon: "📄" },
+  { key: "summary" as Tab, label: "AI Summary" },
+  { key: "chat"    as Tab, label: "Ask AI"     },
 ];
 
 export default function CasePage() {
   const params = useParams();
   const id = params.id as string;
 
-  const [doc,        setDoc]        = useState<CaseDoc | null>(null);
-  const [summary,    setSummary]    = useState("");
-  const [loading,    setLoading]    = useState(true);
-  const [summarizing,setSummarizing]= useState(false);
-  const [error,      setError]      = useState("");
-  const [activeTab,  setActiveTab]  = useState<Tab>("summary");
+  const [doc,         setDoc]         = useState<CaseDoc | null>(null);
+  const [summary,     setSummary]     = useState("");
+  const [loading,     setLoading]     = useState(true);
+  const [summarizing, setSummarizing] = useState(false);
+  const [error,       setError]       = useState("");
+  const [activeTab,   setActiveTab]   = useState<Tab>("summary");
 
   useEffect(() => {
     if (!id) return;
@@ -64,7 +62,7 @@ export default function CasePage() {
         if (!res.ok) throw new Error(data.error);
         setSummary(data.summary);
       } catch {
-        setSummary("⚠️ Failed to generate AI summary. Please check your Groq API key.");
+        setSummary("Failed to generate AI summary. Please check your API key.");
       } finally {
         setSummarizing(false);
       }
@@ -74,9 +72,13 @@ export default function CasePage() {
   /* ── Loading ── */
   if (loading) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 16 }}>
-        <span className="spinner" style={{ width: 36, height: 36, borderWidth: 3 }} />
-        <p style={{ color: "var(--text-3)", fontSize: "0.85rem" }}>Loading case document…</p>
+      <div style={{
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        minHeight: "60vh", gap: 14,
+      }}>
+        <span className="spinner" style={{ width: 32, height: 32, borderWidth: 3 }} />
+        <p style={{ color: "#94a3b8", fontSize: "0.85rem" }}>Loading case…</p>
       </div>
     );
   }
@@ -84,111 +86,86 @@ export default function CasePage() {
   /* ── Error ── */
   if (error || !doc) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 12, padding: "0 24px", textAlign: "center" }}>
-        <span style={{ fontSize: 48 }}>⚠️</span>
-        <p style={{ color: "#f87171", fontWeight: 600 }}>{error || "Case not found"}</p>
-        <a href="/" style={{ color: "var(--accent)", textDecoration: "none", fontSize: "0.85rem" }}>← Back to search</a>
+      <div style={{
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        minHeight: "60vh", gap: 12,
+        padding: "0 24px", textAlign: "center",
+      }}>
+        <p style={{ color: "#dc2626", fontWeight: 600, fontSize: "0.95rem" }}>
+          {error || "Case not found"}
+        </p>
+        <a href="/" style={{ color: "#1d4ed8", textDecoration: "none", fontSize: "0.85rem" }}>
+          ← Back to search
+        </a>
       </div>
     );
   }
 
-  /* ── Full text panel ── */
-  const FullText = () => (
-    <div className="card" style={{ padding: "20px 22px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, paddingBottom: 14, borderBottom: "1px solid var(--border)" }}>
-        <span>📄</span>
-        <span style={{ fontWeight: 600, color: "var(--text-1)", fontSize: "0.9rem" }}>Full Judgment Text</span>
-        <a
-          href={`https://indiankanoon.org/doc/${id}/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ marginLeft: "auto", color: "var(--text-3)", fontSize: "0.72rem", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
-        >
-          View on Indian Kanoon ↗
-        </a>
-      </div>
-      <pre style={{
-        color: "var(--text-2)",
-        fontSize: "0.8rem",
-        lineHeight: 1.8,
-        whiteSpace: "pre-wrap",
-        wordBreak: "break-word",
-        fontFamily: "inherit",
-        margin: 0,
-      }}>
-        {doc.fullText || "Full text not available."}
-      </pre>
-    </div>
-  );
-
   return (
-    <div className="hero-bg" style={{ minHeight: "calc(100dvh - 56px)", paddingBottom: "max(24px, env(safe-area-inset-bottom))" }}>
+    <div style={{
+      minHeight: "calc(100dvh - 56px)",
+      background: "#f8fafc",
+      paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+    }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 16px 0" }}>
 
-        {/* Back */}
-        <a
-          href="/"
-          style={{
-            display: "inline-flex", alignItems: "center", gap: 6,
-            color: "var(--text-3)", fontSize: "0.78rem", textDecoration: "none",
-            marginBottom: 16, transition: "color 0.15s",
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-          onMouseLeave={e => (e.currentTarget.style.color = "var(--text-3)")}
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M9 11L5 7l4-4" strokeLinecap="round" strokeLinejoin="round"/>
+        {/* Back link — uses .back-link for animated chevron */}
+        <a href="/" className="back-link fade-in">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"
+            stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 10L4 6.5 8 3"/>
           </svg>
-          Back to search
+          Back to results
         </a>
 
-        {/* Case header card */}
-        <div className="card fade-in" style={{ padding: "18px 20px", marginBottom: 20 }}>
+        {/* Case header — slides up on entrance */}
+        <div className="card slide-up" style={{ padding: "18px 20px", marginBottom: 20, background: "#fff" }}>
           <h1 style={{
-            fontFamily: "Playfair Display, serif",
+            fontFamily: "'DM Sans', system-ui, sans-serif",
             fontWeight: 700,
-            fontSize: "clamp(1.1rem, 3vw, 1.55rem)",
-            color: "var(--text-1)",
-            lineHeight: 1.3,
+            fontSize: "clamp(1.05rem, 2.8vw, 1.45rem)",
+            color: "#0f172a",
+            lineHeight: 1.35,
             marginBottom: 12,
+            letterSpacing: "-0.01em",
           }}>
             {doc.title}
           </h1>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+          {/* Badges pop in with stagger */}
+          <div className="stagger" style={{ display: "flex", flexWrap: "wrap", gap: 7, alignItems: "center" }}>
             {doc.court && (
-              <span style={{
-                background: "rgba(59,130,246,0.1)", color: "#60a5fa",
-                border: "1px solid rgba(59,130,246,0.2)",
-                borderRadius: 99, fontSize: "0.72rem", fontWeight: 600,
-                padding: "3px 10px", letterSpacing: "0.02em",
+              <span className="badge-entrance" style={{
+                fontSize: "0.7rem", fontWeight: 600,
+                color: "#1d4ed8", background: "#eff6ff",
+                border: "1px solid #bfdbfe",
+                borderRadius: 99, padding: "3px 10px",
               }}>
                 {doc.court}
               </span>
             )}
             {doc.citation && (
-              <span style={{
-                background: "var(--accent-dim)", color: "#fbbf24",
-                border: "1px solid rgba(245,158,11,0.2)",
-                borderRadius: 99, fontSize: "0.72rem", fontWeight: 600, fontFamily: "monospace",
-                padding: "3px 10px",
+              <span className="badge-entrance" style={{
+                fontSize: "0.68rem", fontFamily: "monospace", fontWeight: 500,
+                color: "#475569", background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: 99, padding: "3px 10px",
               }}>
                 {doc.citation}
               </span>
             )}
             {doc.date && (
-              <span style={{ color: "var(--text-3)", fontSize: "0.72rem" }}>{doc.date}</span>
+              <span className="badge-entrance" style={{ fontSize: "0.7rem", color: "#94a3b8" }}>{doc.date}</span>
             )}
           </div>
         </div>
 
-        {/* ── DESKTOP: two-column split ── */}
-        <div style={{ display: "none" }} className="lg-split">
-          {/* Left: summary (60%) */}
+        {/* ── DESKTOP: side-by-side ── */}
+        <div className="lg-split">
           <div style={{ flex: "0 0 58%" }}>
             <CaseSummary summary={summary} loading={summarizing} />
           </div>
-          {/* Right: chat (40%) sticky */}
-          <div style={{ flex: 1, position: "sticky", top: 74, height: "calc(100dvh - 100px)" }}>
+          <div style={{ flex: 1, position: "sticky", top: 74, height: "calc(100dvh - 110px)" }}>
             <ChatInterface caseText={doc.rawDoc} caseTitle={doc.title} />
           </div>
         </div>
@@ -198,12 +175,12 @@ export default function CasePage() {
           {/* Tab bar */}
           <div style={{
             display: "flex",
-            background: "var(--bg-3)",
-            border: "1px solid var(--border)",
-            borderRadius: 12,
+            background: "#fff",
+            border: "1.5px solid #e2e8f0",
+            borderRadius: 10,
             padding: 4,
             marginBottom: 16,
-            gap: 2,
+            gap: 4,
           }}>
             {TABS.map(t => (
               <button
@@ -211,67 +188,38 @@ export default function CasePage() {
                 onClick={() => setActiveTab(t.key)}
                 style={{
                   flex: 1,
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  padding: "9px 6px",
-                  borderRadius: 9,
-                  fontSize: "0.75rem", fontWeight: 500,
+                  padding: "10px 8px",
+                  borderRadius: 7,
+                  fontSize: "0.82rem",
+                  fontWeight: activeTab === t.key ? 600 : 500,
                   border: "none", cursor: "pointer",
-                  transition: "all 0.15s",
                   fontFamily: "inherit",
+                  transition: "all 0.15s",
                   ...(activeTab === t.key
-                    ? { background: "var(--bg-4)", color: "var(--text-1)", boxShadow: "0 1px 4px rgba(0,0,0,0.3)" }
-                    : { background: "transparent", color: "var(--text-3)" }
+                    ? { background: "#1e3a8a", color: "#fff", boxShadow: "0 1px 4px rgba(30,58,138,0.2)" }
+                    : { background: "transparent", color: "#64748b" }
                   ),
                 }}
               >
-                <span style={{ fontSize: "0.95rem" }}>{t.icon}</span>
-                <span style={{ display: "none" }} className="tab-label">{t.label}</span>
-                <span className="tab-label-short">{t.label.split(" ")[0]}</span>
+                {t.label}
               </button>
             ))}
           </div>
 
           {/* Tab content */}
           <div className="fade-in" key={activeTab}>
-            {activeTab === "summary"  && <CaseSummary summary={summary} loading={summarizing} />}
-            {activeTab === "chat"     && <ChatInterface caseText={doc.rawDoc} caseTitle={doc.title} />}
-            {activeTab === "fulltext" && <FullText />}
+            {activeTab === "summary" && <CaseSummary summary={summary} loading={summarizing} />}
+            {activeTab === "chat"    && <ChatInterface caseText={doc.rawDoc} caseTitle={doc.title} />}
           </div>
-        </div>
-
-        {/* Full text below on desktop */}
-        <div className="lg-fulltext" style={{ marginTop: 20 }}>
-          <FullText />
         </div>
       </div>
 
-      {/* Responsive CSS */}
       <style>{`
-        .lg-split {
-          display: none;
-        }
-        .mobile-tabs {
-          display: block;
-        }
-        .lg-fulltext {
-          display: none;
-        }
+        .lg-split   { display: none; }
+        .mobile-tabs{ display: block; }
         @media (min-width: 1024px) {
-          .lg-split {
-            display: flex !important;
-            gap: 20px;
-            align-items: flex-start;
-          }
-          .mobile-tabs {
-            display: none !important;
-          }
-          .lg-fulltext {
-            display: block !important;
-          }
-        }
-        @media (min-width: 480px) {
-          .tab-label-short { display: none !important; }
-          .tab-label { display: inline !important; }
+          .lg-split    { display: flex !important; gap: 20px; align-items: flex-start; }
+          .mobile-tabs { display: none !important; }
         }
       `}</style>
     </div>
