@@ -87,9 +87,11 @@ export async function POST(req: NextRequest) {
     }
 
     text = text.trim();
+    console.log(`[upload] extracted ${text.length} chars from ${file.name}`);
+
     if (!text || text.length < 50) {
       return NextResponse.json(
-        { error: "Could not extract text from the file. Make sure it's not a scanned image PDF." },
+        { error: "Could not extract text from the file. Make sure it's not a scanned image-only PDF." },
         { status: 400 }
       );
     }
@@ -105,6 +107,7 @@ export async function POST(req: NextRequest) {
     let lastError: any;
     for (const model of MODELS) {
       try {
+        console.log(`[upload] trying model ${model}`);
         const completion = await groq.chat.completions.create({
           model,
           messages,
@@ -115,15 +118,31 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ summary, fileName: file.name, model });
       } catch (err: any) {
         lastError = err;
-        const isRateLimit = err?.status === 429 || err?.error?.code === "rate_limit_exceeded";
+        console.error(`[upload] ${model} failed:`, err?.status, err?.message, err?.error?.code);
+        const isRateLimit =
+          err?.status === 429 ||
+          err?.error?.code === "rate_limit_exceeded" ||
+          err?.error?.code === "tokens_per_day" ||
+          String(err?.message).includes("rate_limit");
         if (!isRateLimit) break;
-        console.warn(`Rate limit on ${model}, trying next…`);
+        console.warn(`[upload] rate limit on ${model}, trying next…`);
       }
     }
 
-    const isRateLimit = lastError?.status === 429 || lastError?.error?.code === "rate_limit_exceeded";
+    const errMsg: string = lastError?.error?.message || lastError?.message || "";
+    const isRateLimit =
+      lastError?.status === 429 ||
+      lastError?.error?.code === "rate_limit_exceeded" ||
+      errMsg.includes("rate_limit") ||
+      errMsg.includes("Rate limit");
+    const isAuthError = lastError?.status === 401 || errMsg.includes("API key") || errMsg.includes("auth");
+
     return NextResponse.json(
-      { error: isRateLimit ? "Daily AI limit reached. Try again in a few hours." : "Failed to analyze document." },
+      { error: isRateLimit
+          ? "Daily AI limit reached. Please try again in a few hours."
+          : isAuthError
+          ? "Invalid Groq API key. Check your GROQ_API_KEY environment variable."
+          : `Analysis failed: ${errMsg || "Unknown error"}` },
       { status: 500 }
     );
   } catch (err: any) {
