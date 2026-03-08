@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
         // Fallback: try pdf-parse directly
         try {
           // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const pdfParse = require("pdf-parse/lib/pdf-parse.js");
+          const pdfParse = require("pdf-parse");
           const result = await pdfParse(buffer);
           text = result.text;
           console.log(`[upload] pdf-parse fallback extracted ${text.length} chars`);

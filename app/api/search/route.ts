@@ -64,18 +64,49 @@ async function searchIndianKanoon(
 ): Promise<{ results: any[]; total: number }> {
   const url = `https://indiankanoon.org/search/?formInput=${encodeURIComponent(query)}&pagenum=${page}`;
 
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.9",
-    },
-  });
+  console.log(`[search] fetching: ${url}`);
 
-  if (!response.ok) return { results: [], total: 0 };
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-IN,en;q=0.9,hi;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Referer: "https://indiankanoon.org/",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "same-origin",
+        "Upgrade-Insecure-Requests": "1",
+      },
+      cache: "no-store",
+    });
+  } catch (fetchErr: any) {
+    console.error(`[search] fetch failed:`, fetchErr?.message);
+    return { results: [], total: 0 };
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  console.log(`[search] status: ${response.status}`);
+
+  if (!response.ok) {
+    console.error(`[search] bad status ${response.status} for query "${query}"`);
+    return { results: [], total: 0 };
+  }
 
   const html = await response.text();
+  console.log(`[search] html length: ${html.length}, article tags: ${(html.match(/<article/g) || []).length}`);
+
   return {
     results: parseSearchResults(html),
     total: parseTotalResults(html),
