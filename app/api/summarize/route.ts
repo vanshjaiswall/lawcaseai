@@ -3,6 +3,13 @@ import Groq from "groq-sdk";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+// Model fallback chain — if primary hits rate limit, try next
+const MODELS = [
+  "llama-3.3-70b-versatile",
+  "llama-3.1-8b-instant",
+  "gemma2-9b-it",
+];
+
 const SYSTEM_PROMPT = `You are an expert Indian legal analyst AI assistant built for law students.
 When given the text of a court judgment, you MUST extract and present the following sections in a structured format:
 
@@ -46,26 +53,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: `Please analyze the following Indian court judgment and provide the structured summary:\n\nCase: ${title || "Unknown"}\n\n---\n\n${caseText.slice(0, 12000)}`,
-        },
-      ],
-      temperature: 0.3,
-      max_tokens: 3000,
-    });
+    const messages = [
+      { role: "system" as const, content: SYSTEM_PROMPT },
+      {
+        role: "user" as const,
+        content: `Please analyze the following Indian court judgment and provide the structured summary:\n\nCase: ${title || "Unknown"}\n\n---\n\n${caseText.slice(0, 10000)}`,
+      },
+    ];
 
-    const summary = completion.choices?.[0]?.message?.content || "Unable to generate summary.";
+    // Try each model in order — fall back if rate limited
+    let lastError: any;
+    for (const model of MODELS) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model,
+          messages,
+          temperature: 0.3,
+          max_tokens: 2500,
+        });
+        const summary = completion.choices?.[0]?.message?.content || "Unable to generate summary.";
+        return NextResponse.json({ summary, model });
+      } catch (err: any) {
+        lastError = err;
+        const isRateLimit = err?.status === 429 || err?.error?.code === "rate_limit_exceeded";
+        if (!isRateLimit) break; // Only fall back on rate limit errors
+        console.warn(`Rate limit on ${model}, trying next model…`);
+      }
+    }
 
-    return NextResponse.json({ summary });
-  } catch (err: any) {
-    console.error("Summarize error:", err);
+    console.error("Summarize error:", lastError);
+    const isRateLimit = lastError?.status === 429 || lastError?.error?.code === "rate_limit_exceeded";
     return NextResponse.json(
-      { error: "Failed to generate AI summary. Check your Groq API key." },
+      { error: isRateLimit
+          ? "Daily AI limit reached. Please try again in a few hours or upgrade your Groq plan."
+          : "Failed to generate AI summary. Check your Groq API key." },
       { status: 500 }
     );
   }

@@ -3,6 +3,12 @@ import Groq from "groq-sdk";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+const MODELS = [
+  "llama-3.3-70b-versatile",
+  "llama-3.1-8b-instant",
+  "gemma2-9b-it",
+];
+
 const SYSTEM_PROMPT = `You are an expert Indian legal research assistant for law students.
 You have been provided with the text of a court judgment. Answer the student's questions about this case accurately and concisely.
 
@@ -55,20 +61,32 @@ export async function POST(req: NextRequest) {
     // Add current message
     messages.push({ role: "user", content: message });
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages,
-      temperature: 0.4,
-      max_tokens: 2000,
-    });
+    // Try each model in order — fall back if rate limited
+    let lastError: any;
+    for (const model of MODELS) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model,
+          messages,
+          temperature: 0.4,
+          max_tokens: 1500,
+        });
+        const reply = completion.choices?.[0]?.message?.content || "I couldn't generate a response. Please try again.";
+        return NextResponse.json({ reply, model });
+      } catch (err: any) {
+        lastError = err;
+        const isRateLimit = err?.status === 429 || err?.error?.code === "rate_limit_exceeded";
+        if (!isRateLimit) break;
+        console.warn(`Rate limit on ${model}, trying next model…`);
+      }
+    }
 
-    const reply = completion.choices?.[0]?.message?.content || "I couldn't generate a response. Please try again.";
-
-    return NextResponse.json({ reply });
-  } catch (err: any) {
-    console.error("Chat error:", err);
+    console.error("Chat error:", lastError);
+    const isRateLimit = lastError?.status === 429 || lastError?.error?.code === "rate_limit_exceeded";
     return NextResponse.json(
-      { error: "Chat failed. Check your Groq API key." },
+      { error: isRateLimit
+          ? "Daily AI limit reached. Please try again in a few hours."
+          : "Chat failed. Check your Groq API key." },
       { status: 500 }
     );
   }
