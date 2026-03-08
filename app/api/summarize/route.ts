@@ -89,5 +89,11 @@ export async function POST(req: NextRequest) {
           : "Failed to generate AI summary. Check your Groq API key." },
       { status: 500 }
     );
+  } catch (err: any) {
+    console.error("Summarize error:", err);
+    return NextResponse.json(
+      { error: "Failed to generate AI summary. Check your Groq API key." },
+      { status: 500 }
+    );
   }
 }

@@ -89,5 +89,11 @@ export async function POST(req: NextRequest) {
           : "Chat failed. Check your Groq API key." },
       { status: 500 }
     );
+  } catch (err: any) {
+    console.error("Chat error:", err);
+    return NextResponse.json(
+      { error: "Chat failed. Check your Groq API key." },
+      { status: 500 }
+    );
   }
 }
