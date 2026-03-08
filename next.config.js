@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Treat these as Node.js-only packages — don't bundle them for the edge
-  serverExternalPackages: ["mammoth"],
+  serverExternalPackages: ["mammoth", "unpdf", "pdfjs-dist"],
   // Allow fetching from Indian Kanoon
   async headers() {
     return [

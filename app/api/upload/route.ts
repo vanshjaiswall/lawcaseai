@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
 
+// Force Node.js runtime (required for unpdf / pdfjs-dist)
+export const runtime = "nodejs";
+
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const MODELS = [
@@ -62,12 +65,30 @@ export async function POST(req: NextRequest) {
 
     // Extract text based on file type
     if (fileName.endsWith(".pdf")) {
-      // unpdf works reliably in Next.js serverless (unlike pdf-parse)
-      const { extractText, getDocumentProxy } = await import("unpdf");
-      const uint8 = new Uint8Array(buffer);
-      const pdf   = await getDocumentProxy(uint8);
-      const { text: extracted } = await extractText(pdf, { mergePages: true });
-      text = extracted;
+      try {
+        const { extractText, getDocumentProxy } = await import("unpdf");
+        const uint8 = new Uint8Array(buffer);
+        const pdf   = await getDocumentProxy(uint8);
+        const { text: extracted } = await extractText(pdf, { mergePages: true });
+        text = extracted;
+        console.log(`[upload] unpdf extracted ${text.length} chars`);
+      } catch (pdfErr: any) {
+        console.error("[upload] unpdf failed:", pdfErr?.message);
+        // Fallback: try pdf-parse directly
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const pdfParse = require("pdf-parse/lib/pdf-parse.js");
+          const result = await pdfParse(buffer);
+          text = result.text;
+          console.log(`[upload] pdf-parse fallback extracted ${text.length} chars`);
+        } catch (fallbackErr: any) {
+          console.error("[upload] pdf-parse fallback also failed:", fallbackErr?.message);
+          return NextResponse.json(
+            { error: `PDF extraction failed: ${pdfErr?.message || "Unknown PDF error"}` },
+            { status: 400 }
+          );
+        }
+      }
     } else if (fileName.endsWith(".docx") || fileName.endsWith(".doc")) {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const mammoth = require("mammoth");
