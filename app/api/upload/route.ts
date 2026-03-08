@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
 
     // Extract text based on file type
     if (fileName.endsWith(".pdf")) {
-      const pdfParse = (await import("pdf-parse")).default;
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pdfParse = require("pdf-parse");
       const data = await pdfParse(buffer);
       text = data.text;
     } else if (fileName.endsWith(".docx") || fileName.endsWith(".doc")) {
