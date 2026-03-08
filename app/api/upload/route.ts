@@ -62,12 +62,22 @@ export async function POST(req: NextRequest) {
 
     // Extract text based on file type
     if (fileName.endsWith(".pdf")) {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdfParse = require("pdf-parse");
-      const data = await pdfParse(buffer);
-      text = data.text;
+      try {
+        // Use the lib path directly to avoid pdf-parse loading test files on import
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const pdfParse = require("pdf-parse/lib/pdf-parse.js");
+        const data = await pdfParse(buffer);
+        text = data.text;
+      } catch {
+        // Fallback: try the main export
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const pdfParse = require("pdf-parse");
+        const data = await pdfParse(buffer);
+        text = data.text;
+      }
     } else if (fileName.endsWith(".docx") || fileName.endsWith(".doc")) {
-      const mammoth = await import("mammoth");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const mammoth = require("mammoth");
       const result = await mammoth.extractRawText({ buffer });
       text = result.value;
     } else if (
@@ -78,7 +88,7 @@ export async function POST(req: NextRequest) {
       text = buffer.toString("utf-8");
     } else {
       return NextResponse.json(
-        { error: "Unsupported file type. Please upload a PDF, Word doc, or text file." },
+        { error: "Unsupported file type. Please upload a PDF, Word doc (.docx), or text file (.txt)." },
         { status: 400 }
       );
     }
