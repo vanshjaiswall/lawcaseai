@@ -3,7 +3,7 @@
 interface Props { summary: string; loading: boolean; }
 
 const SECTIONS: Record<string, { bg: string; border: string; color: string; label: string }> = {
-  FACTS:     { bg: "#eff6ff", border: "#bfdbfe", color: "#1d4ed8", label: "Facts" },
+  FACTS:     { bg: "#f5f0ff", border: "#ddd6fe", color: "#7c3aed", label: "Facts" },
   JUDGMENT:  { bg: "#f0fdf4", border: "#bbf7d0", color: "#15803d", label: "Judgment" },
   REASONING: { bg: "#faf5ff", border: "#e9d5ff", color: "#7c3aed", label: "Reasoning" },
   KEY:       { bg: "#fffbeb", border: "#fde68a", color: "#92400e", label: "Key Points" },
@@ -62,7 +62,7 @@ function renderMd(text: string) {
     if (line.startsWith("- ") || line.startsWith("* ")) {
       return (
         <div key={i} style={{ display: "flex", gap: 9, marginBottom: 6, paddingLeft: 2 }}>
-          <span style={{ color: "#1d4ed8", flexShrink: 0, lineHeight: 1.65, fontWeight: 700, fontSize: "0.75rem" }}>•</span>
+          <span style={{ color: "#7c3aed", flexShrink: 0, lineHeight: 1.65, fontWeight: 700, fontSize: "0.75rem" }}>•</span>
           <span style={{ color: "#475569", fontSize: "0.875rem", lineHeight: 1.7 }}>
             <InlineMd text={line.slice(2)} />
           </span>
@@ -73,7 +73,7 @@ function renderMd(text: string) {
     if (num) {
       return (
         <div key={i} style={{ display: "flex", gap: 9, marginBottom: 6, paddingLeft: 2 }}>
-          <span style={{ color: "#1d4ed8", flexShrink: 0, fontWeight: 700, fontSize: "0.78rem", minWidth: 18, lineHeight: 1.7 }}>
+          <span style={{ color: "#7c3aed", flexShrink: 0, fontWeight: 700, fontSize: "0.78rem", minWidth: 18, lineHeight: 1.7 }}>
             {num[1]}.
           </span>
           <span style={{ color: "#475569", fontSize: "0.875rem", lineHeight: 1.7 }}>
@@ -133,12 +133,12 @@ export default function CaseSummary({ summary, loading }: Props) {
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
           <div style={{
             width: 30, height: 30, borderRadius: 8,
-            background: "#eff6ff", border: "1px solid #bfdbfe",
+            background: "#f5f0ff", border: "1px solid #ddd6fe",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 1.5C4 1.5 1.5 4 1.5 7S4 12.5 7 12.5 12.5 10 12.5 7 10 1.5 7 1.5z" stroke="#1d4ed8" strokeWidth="1.2"/>
-              <path d="M7 5v3.5M7 10v.2" stroke="#1d4ed8" strokeWidth="1.2" strokeLinecap="round"/>
+              <path d="M7 1.5C4 1.5 1.5 4 1.5 7S4 12.5 7 12.5 12.5 10 12.5 7 10 1.5 7 1.5z" stroke="#7c3aed" strokeWidth="1.2"/>
+              <path d="M7 5v3.5M7 10v.2" stroke="#7c3aed" strokeWidth="1.2" strokeLinecap="round"/>
             </svg>
           </div>
           <span style={{ fontWeight: 600, color: "#0f172a", fontSize: "0.9rem" }}>AI Case Summary</span>

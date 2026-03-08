@@ -129,8 +129,8 @@ export default function SearchBar({ onSearch, loading, onUploadResult }: Props) 
                 whiteSpace: "nowrap",
                 fontFamily: "'DM Sans', inherit",
                 transition: "color 0.15s",
-                color: type === t.value ? "#1d4ed8" : "#64748b",
-                borderBottom: type === t.value ? "2px solid #1d4ed8" : "2px solid transparent",
+                color: type === t.value ? "#7c3aed" : "#64748b",
+                borderBottom: type === t.value ? "2px solid #7c3aed" : "2px solid transparent",
                 marginBottom: -1.5,
                 paddingBottom: 9,
                 outline: "none",
@@ -188,9 +188,9 @@ export default function SearchBar({ onSearch, loading, onUploadResult }: Props) 
               color: "#64748b",
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#93c5fd";
-              (e.currentTarget as HTMLButtonElement).style.color = "#1d4ed8";
+              (e.currentTarget as HTMLButtonElement).style.background = "#f5f0ff";
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "#c4aff0";
+              (e.currentTarget as HTMLButtonElement).style.color = "#7c3aed";
             }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLButtonElement).style.background = "#f8fafc";
@@ -255,10 +255,10 @@ export default function SearchBar({ onSearch, loading, onUploadResult }: Props) 
             onClick={() => setShowFilter(v => !v)}
             style={{
               display: "flex", alignItems: "center", gap: 6,
-              background: showFilter ? "#eff6ff" : "none",
-              border: showFilter ? "1.5px solid #bfdbfe" : "1.5px solid transparent",
+              background: showFilter ? "#f5f0ff" : "none",
+              border: showFilter ? "1.5px solid #ddd6fe" : "1.5px solid transparent",
               cursor: "pointer",
-              color: showFilter ? "#1d4ed8" : "#64748b",
+              color: showFilter ? "#7c3aed" : "#64748b",
               fontSize: "0.78rem",
               fontWeight: 500,
               padding: "4px 10px",
@@ -275,7 +275,7 @@ export default function SearchBar({ onSearch, loading, onUploadResult }: Props) 
             Filters
             {hasFilters && (
               <span style={{
-                background: "#1d4ed8", color: "#fff",
+                background: "#7c3aed", color: "#fff",
                 borderRadius: 99, fontSize: "0.6rem",
                 fontWeight: 700, padding: "1px 6px",
               }}>

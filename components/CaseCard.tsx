@@ -27,8 +27,8 @@ export default function CaseCard({ caseData }: { caseData: CaseResult }) {
               {caseData.court && (
                 <span style={{
                   fontSize: "0.7rem", fontWeight: 600,
-                  color: "#1d4ed8", background: "#eff6ff",
-                  border: "1px solid #bfdbfe",
+                  color: "#7c3aed", background: "#f5f0ff",
+                  border: "1px solid #ddd6fe",
                   padding: "2px 9px", borderRadius: 99,
                 }}>
                   {caseData.court}
@@ -84,7 +84,7 @@ export default function CaseCard({ caseData }: { caseData: CaseResult }) {
           <span style={{ fontSize: "0.7rem", color: "#94a3b8", fontWeight: 500 }}>
             Chat with judgment
           </span>
-          <span style={{ marginLeft: "auto", fontSize: "0.68rem", color: "#bfdbfe", fontWeight: 600, letterSpacing: "0.02em" }}>
+          <span style={{ marginLeft: "auto", fontSize: "0.68rem", color: "#ddd6fe", fontWeight: 600, letterSpacing: "0.02em" }}>
             OPEN →
           </span>
         </div>

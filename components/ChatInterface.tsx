@@ -25,13 +25,13 @@ function AiMessage({ text }: { text: string }) {
         }
         if (line.startsWith("- ") || line.startsWith("* ")) {
           return <div key={i} style={{ display: "flex", gap: 7, paddingLeft: 2 }}>
-            <span style={{ color: "#1d4ed8", flexShrink: 0, fontWeight: 700, lineHeight: 1.6 }}>·</span>
+            <span style={{ color: "#7c3aed", flexShrink: 0, fontWeight: 700, lineHeight: 1.6 }}>·</span>
             <span style={{ lineHeight: 1.6 }}>{line.slice(2)}</span>
           </div>;
         }
         const num = line.match(/^(\d+)\.\s(.+)/);
         if (num) return <div key={i} style={{ display: "flex", gap: 7, paddingLeft: 2 }}>
-          <span style={{ color: "#1d4ed8", flexShrink: 0, fontWeight: 600, fontSize: "0.8rem", minWidth: 16, lineHeight: 1.6 }}>{num[1]}.</span>
+          <span style={{ color: "#7c3aed", flexShrink: 0, fontWeight: 600, fontSize: "0.8rem", minWidth: 16, lineHeight: 1.6 }}>{num[1]}.</span>
           <span style={{ lineHeight: 1.6 }}>{num[2]}</span>
         </div>;
         if (!line.trim()) return <div key={i} style={{ height: 5 }} />;
@@ -111,7 +111,7 @@ export default function ChatInterface({ caseText, caseTitle }: Props) {
       }}>
         <div style={{
           width: 32, height: 32, borderRadius: 9,
-          background: "#1e3a8a",
+          background: "#6d28d9",
           display: "flex", alignItems: "center", justifyContent: "center",
           flexShrink: 0,
         }}>
@@ -165,12 +165,12 @@ export default function ChatInterface({ caseText, caseTitle }: Props) {
           }}>
             <div style={{
               width: 48, height: 48, borderRadius: 13,
-              background: "#eff6ff", border: "1px solid #bfdbfe",
+              background: "#f5f0ff", border: "1px solid #ddd6fe",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                <path d="M11 2C6.03 2 2 5.86 2 10.6c0 2.24.87 4.28 2.3 5.82L3 20l4.08-1.1A9.3 9.3 0 0011 19.2C15.97 19.2 20 15.34 20 10.6S15.97 2 11 2z" stroke="#1d4ed8" strokeWidth="1.5" strokeLinejoin="round"/>
-                <path d="M8 10.5h5M8 7.5h3" stroke="#1d4ed8" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M11 2C6.03 2 2 5.86 2 10.6c0 2.24.87 4.28 2.3 5.82L3 20l4.08-1.1A9.3 9.3 0 0011 19.2C15.97 19.2 20 15.34 20 10.6S15.97 2 11 2z" stroke="#7c3aed" strokeWidth="1.5" strokeLinejoin="round"/>
+                <path d="M8 10.5h5M8 7.5h3" stroke="#7c3aed" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
             <div>
@@ -194,7 +194,7 @@ export default function ChatInterface({ caseText, caseTitle }: Props) {
                     fontFamily: "inherit", lineHeight: 1,
                     minHeight: 34,
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#93c5fd"; e.currentTarget.style.color = "#1d4ed8"; e.currentTarget.style.background = "#eff6ff"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#c4aff0"; e.currentTarget.style.color = "#7c3aed"; e.currentTarget.style.background = "#f5f0ff"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.color = "#475569"; e.currentTarget.style.background = "#f8fafc"; }}
                 >
                   {q}
@@ -216,7 +216,7 @@ export default function ChatInterface({ caseText, caseTitle }: Props) {
             {m.role === "assistant" && (
               <div style={{
                 width: 26, height: 26, borderRadius: 7,
-                background: "#1e3a8a", flexShrink: 0,
+                background: "#6d28d9", flexShrink: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 marginBottom: 2,
               }}>
@@ -245,7 +245,7 @@ export default function ChatInterface({ caseText, caseTitle }: Props) {
           <div className="fade-in" style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
             <div style={{
               width: 26, height: 26, borderRadius: 7,
-              background: "#1e3a8a", flexShrink: 0,
+              background: "#6d28d9", flexShrink: 0,
               display: "flex", alignItems: "center", justifyContent: "center",
               marginBottom: 2,
             }}>

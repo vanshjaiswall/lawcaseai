@@ -72,33 +72,33 @@ export default function Home() {
               border: "1px solid #c7d7f9",
               borderRadius: 6, padding: "5px 14px",
               fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.05em",
-              textTransform: "uppercase", color: "#1e3a8a",
+              textTransform: "uppercase", color: "#6d28d9",
               marginBottom: 24,
             }}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <circle cx="6" cy="6" r="5" stroke="#1e3a8a" strokeWidth="1.2"/>
-                <path d="M6 4v3M6 8.5v.2" stroke="#1e3a8a" strokeWidth="1.2" strokeLinecap="round"/>
+                <circle cx="6" cy="6" r="5" stroke="#6d28d9" strokeWidth="1.2"/>
+                <path d="M6 4v3M6 8.5v.2" stroke="#6d28d9" strokeWidth="1.2" strokeLinecap="round"/>
               </svg>
               Indian Legal Research · AI Powered
             </div>
 
             <h1 className="slide-up" style={{
-              fontFamily: "'Lora', Georgia, serif",
+              fontFamily: "'Times New Roman', Times, Georgia, serif",
               fontSize: "clamp(1.9rem, 5.5vw, 3rem)",
               fontWeight: 700,
               lineHeight: 1.18,
               letterSpacing: "-0.01em",
-              color: "#0f172a",
+              color: "#1a0a2e",
               marginBottom: 16,
               animationDelay: "0.06s",
             }}>
               Search Indian Case Law
               <br />
-              <span style={{ color: "#1d4ed8", fontStyle: "italic", fontWeight: 600 }}>powered by AI</span>
+              <span style={{ color: "#7c3aed", fontStyle: "italic", fontWeight: 600 }}>powered by AI</span>
             </h1>
 
             <p className="fade-up" style={{
-              color: "#475569",
+              color: "#5b4b7a",
               fontSize: "0.975rem",
               lineHeight: 1.7,
               maxWidth: 460,
@@ -146,10 +146,10 @@ export default function Home() {
               marginBottom: 12,
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1d4ed8" strokeWidth="1.6" strokeLinecap="round">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#7c3aed" strokeWidth="1.6" strokeLinecap="round">
                   <path d="M2 13h10M7 1v8M4 4l3-3 3 3"/>
                 </svg>
-                <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#1d4ed8" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#7c3aed" }}>
                   {uploadResult.fileName}
                 </span>
               </div>
@@ -157,7 +157,7 @@ export default function Home() {
                 onClick={() => { setUploadResult(null); setSearched(false); }}
                 style={{
                   background: "none", border: "none", cursor: "pointer",
-                  color: "#94a3b8", fontSize: "0.75rem", fontFamily: "inherit",
+                  color: "#a896c8", fontSize: "0.75rem", fontFamily: "inherit",
                   padding: "4px 8px", borderRadius: 6, transition: "color 0.14s",
                 }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#dc2626")}
@@ -214,7 +214,7 @@ export default function Home() {
                 <div
                   className="fade-in"
                   style={{
-                    fontSize: "0.75rem", color: "#1d4ed8",
+                    fontSize: "0.75rem", color: "#7c3aed",
                     background: "rgba(29,78,216,0.05)",
                     border: "1px solid rgba(29,78,216,0.15)",
                     borderRadius: 8, padding: "5px 12px",

@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,600;0,700;1,600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
           rel="stylesheet"
         />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -30,8 +30,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {/* Nav */}
         <header style={{
-          background: "rgba(255,255,255,0.92)",
-          borderBottom: "1px solid #e2e8f0",
+          background: "rgba(255,255,255,0.94)",
+          borderBottom: "1px solid #e8dff8",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           position: "sticky",
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Icon mark — scales on nav hover via .logo-mark */}
               <div className="logo-mark" style={{
                 width: 30, height: 30,
-                background: "#1e3a8a",
+                background: "linear-gradient(135deg, #7c3aed 0%, #db2777 100%)",
                 borderRadius: 6,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 flexShrink: 0,
@@ -64,13 +64,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
               {/* Wordmark */}
               <span style={{
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Times New Roman', Times, serif",
                 fontWeight: 700,
-                fontSize: 16,
-                color: "#0f172a",
-                letterSpacing: "-0.02em",
+                fontSize: 17,
+                color: "#1a0a2e",
+                letterSpacing: "-0.01em",
               }}>
-                LawCase<span style={{ color: "#1d4ed8", fontWeight: 500 }}> AI</span>
+                LawCase<span style={{
+                  background: "linear-gradient(135deg, #7c3aed, #db2777)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontWeight: 600,
+                }}> AI</span>
               </span>
             </a>
 
@@ -81,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 fontWeight: 500,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: "#94a3b8",
+                color: "#a896c8",
               }} className="hidden sm:block">
                 Indian Courts · AI Powered
               </span>

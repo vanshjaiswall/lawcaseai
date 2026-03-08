@@ -78,7 +78,7 @@ export default function CasePage() {
         minHeight: "60vh", gap: 14,
       }}>
         <span className="spinner" style={{ width: 32, height: 32, borderWidth: 3 }} />
-        <p style={{ color: "#94a3b8", fontSize: "0.85rem" }}>Loading case…</p>
+        <p style={{ color: "#a896c8", fontSize: "0.85rem" }}>Loading case…</p>
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function CasePage() {
         <p style={{ color: "#dc2626", fontWeight: 600, fontSize: "0.95rem" }}>
           {error || "Case not found"}
         </p>
-        <a href="/" style={{ color: "#1d4ed8", textDecoration: "none", fontSize: "0.85rem" }}>
+        <a href="/" style={{ color: "#7c3aed", textDecoration: "none", fontSize: "0.85rem" }}>
           ← Back to search
         </a>
       </div>
@@ -105,7 +105,7 @@ export default function CasePage() {
   return (
     <div style={{
       minHeight: "calc(100dvh - 56px)",
-      background: "#f8fafc",
+      background: "#faf7ff",
       paddingBottom: "max(24px, env(safe-area-inset-bottom))",
     }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 16px 0" }}>
@@ -125,7 +125,7 @@ export default function CasePage() {
             fontFamily: "'DM Sans', system-ui, sans-serif",
             fontWeight: 700,
             fontSize: "clamp(1.05rem, 2.8vw, 1.45rem)",
-            color: "#0f172a",
+            color: "#1a0a2e",
             lineHeight: 1.35,
             marginBottom: 12,
             letterSpacing: "-0.01em",
@@ -137,8 +137,8 @@ export default function CasePage() {
             {doc.court && (
               <span className="badge-entrance" style={{
                 fontSize: "0.7rem", fontWeight: 600,
-                color: "#1d4ed8", background: "#eff6ff",
-                border: "1px solid #bfdbfe",
+                color: "#7c3aed", background: "#f5f0ff",
+                border: "1px solid #ddd6fe",
                 borderRadius: 99, padding: "3px 10px",
               }}>
                 {doc.court}
@@ -147,7 +147,7 @@ export default function CasePage() {
             {doc.citation && (
               <span className="badge-entrance" style={{
                 fontSize: "0.68rem", fontFamily: "monospace", fontWeight: 500,
-                color: "#475569", background: "#f8fafc",
+                color: "#5b4b7a", background: "#faf7ff",
                 border: "1px solid #e2e8f0",
                 borderRadius: 99, padding: "3px 10px",
               }}>
@@ -155,7 +155,7 @@ export default function CasePage() {
               </span>
             )}
             {doc.date && (
-              <span className="badge-entrance" style={{ fontSize: "0.7rem", color: "#94a3b8" }}>{doc.date}</span>
+              <span className="badge-entrance" style={{ fontSize: "0.7rem", color: "#a896c8" }}>{doc.date}</span>
             )}
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function CasePage() {
                   fontFamily: "inherit",
                   transition: "all 0.15s",
                   ...(activeTab === t.key
-                    ? { background: "#1e3a8a", color: "#fff", boxShadow: "0 1px 4px rgba(30,58,138,0.2)" }
+                    ? { background: "#6d28d9", color: "#fff", boxShadow: "0 1px 4px rgba(109,40,217,0.2)" }
                     : { background: "transparent", color: "#64748b" }
                   ),
                 }}
