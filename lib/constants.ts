@@ -159,7 +159,7 @@ export function generateQueryVariations(query: string): string[] {
   }
 
   // Remove duplicates
-  return [...new Set(variations)];
+  return Array.from(new Set(variations));
 }
 
 export function buildSearchQuery(params: {
